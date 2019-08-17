@@ -1,0 +1,20 @@
+{
+  "name": "questionnaire",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "nodemon ./bin/www"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "jwt-simple": "^0.5.6",
+    "log4js": "^5.0.0",
+    "moment": "^2.24.0",
+    "mysql2": "^1.6.5",
+    "nodemon": "^1.19.1",
+    "redis": "^2.8.0",
+    "sequelize": "^6.0.0"
+  }
+}
