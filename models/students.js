@@ -25,9 +25,23 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        Submit:{
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue:0
+        }
     },{
         updatedAt:'UpdatedAt',
         createdAt:'CreatedAt'
     })
+    Student.associate = function(models){
+    models.Student.belongsTo(models.ClassInfo, {
+        onDelete: "CASCADE",
+        foreignKey: {
+            name: 'ClassId',
+            allowNull: false
+        }
+    });
+}
    return Student;
 }
