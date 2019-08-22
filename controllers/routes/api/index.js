@@ -26,64 +26,26 @@ fs
 //Check authentication and expire time
 router.use('/' + version,
     async function Authentication(req, res, next) {
-        let token = req.header('TOKEN');
+        let token = req.header('Token');
         let redisClient = res.locals.redisClient;
-        let logger = res.locals.logger;
-        res.locals.logger.info("header token :" + token);
+        let {db,logger} = {...res.locals};
         let decoded = null;
         try {
             decoded = jwt.decode(token, jwtSecret);
             res.locals.logger.info(decoded);
-            res.locals.shopid = decoded.shopid;
-            logger.info(res.locals.shopid);
-            var operatedShop = await res.locals.db.ShopInfo.findOne({
-                where: {
-                  ShopId: res.locals.shopid
-                }
-            });
-            if (operatedShop){
-                if(operatedShop.Status != 1){
-                    res.json({
-                        Error: {
-                            Message: `店面状态异常，无权操作。Status:${operatedShop.Status}`
-                        }
-                    }).end();
-                    return;
-                }
-            }else{
-                res.json({
-                    Error: {
-                        Message: "店面不存在"
-                    }
-                }).end();
+            let {id,classId,name} = {...decoded};
+            let student = await db.Student.findByPk(id);
+            if (!student){
+                res.json(util.MakeErrorResponse('Token无效，请重新登录！')).end();
                 return;
             }
+            res.locals.name = name;
+            res.locals.classId = classId;
+            res.locals.studentId = id;
+            next();            
         } catch (error) {
             logger.error(error);
-            res.json({
-                Error: {
-                    Message: "Token 无效"
-                }
-            }).end();
-            return;
-        }
-        try {
-            const {
-                promisify
-            } = require('util');
-            const getAsync = promisify(redisClient.get).bind(redisClient);
-            var reply = await getAsync(decoded.shopid);
-            if (reply == null) {
-                next(new Error("登录失效"));
-            } else {
-                next();
-            }
-        } catch (error) {
-            res.json({
-                Error: {
-                    Message: "系统错误，请联系系统管理员。Redis Error!\n" + error.message
-                }
-            }).end();
+            res.json(util.MakeErrorResponse('Token无效，请重新登录！')).end();
             return;
         }
     }
