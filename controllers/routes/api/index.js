@@ -36,7 +36,7 @@ router.use('/' + version,
             let {id,classId,name} = {...decoded};
             let student = await db.Student.findByPk(id);
             if (!student){
-                res.json(util.MakeErrorResponse('Token无效，请重新登录！')).end();
+                res.status(401).json(util.MakeErrorResponse('Token无效，请重新登录！')).end();
                 return;
             }
             res.locals.name = name;
@@ -45,7 +45,7 @@ router.use('/' + version,
             next();            
         } catch (error) {
             logger.error(error);
-            res.json(util.MakeErrorResponse('Token无效，请重新登录！')).end();
+            res.status(401).json(util.MakeErrorResponse('Token无效，请重新登录！')).end();
             return;
         }
     }

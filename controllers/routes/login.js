@@ -18,6 +18,13 @@ router.post('/', async function (req, res, next) {
     }
   });
   if (instance){
+    if (instance.Status != 1 ){
+      res.json(util.MakeErrorResponse('该生信息已注销')).end();
+      return;
+    }else if (instance.Submit != 0 ){
+      res.json(util.MakeErrorResponse('您的调查问卷已经完成过了，感谢您的参与！')).end();
+      return;
+    }
     const token = jwt.encode({
         id:instance.Id,
         classId:instance.ClassId,
@@ -30,7 +37,7 @@ router.post('/', async function (req, res, next) {
     }}).end();
     return;
   }else{
-    res.json({Error:{Message:'学号与姓名不匹配'}}).end();
+    res.json(util.MakeErrorResponse('学号与姓名不匹配')).end();
   }  
 });
 

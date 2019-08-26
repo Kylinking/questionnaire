@@ -15,13 +15,14 @@ const util = require('./util/util');
 const cors = require('cors')
 
 var app = express();
+var helmet = require('helmet')
+app.use(helmet())
 app.db = db;
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(cors());
+//app.use(cors());
 
-app.use('/doc', express.static(__dirname + '/doc/'));
-app.use('/', express.static(__dirname + '/frontend/'));
+app.use('/', express.static(__dirname + '/public/dist/'));
 // app.get('/',(req,res)=>{
 //     res.sendFile(path.resolve(__dirname+'/frontend/index.html'));
 // });

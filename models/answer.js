@@ -22,14 +22,16 @@ module.exports = (sequelize, DataTypes) => {
             onDelete: "CASCADE",
             foreignKey: {
                 name: 'StudentId',
-                allowNull: false
+                allowNull: false,
+                unique:'student_question'
             }
         });
         models.Answer.belongsTo(models.Question,{
             onDelete: "CASCADE",
             foreignKey: {
                 name: 'QuestionId',
-                allowNull: false
+                allowNull: false,
+                unique:'student_question'
             }
         });
     };
