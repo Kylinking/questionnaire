@@ -20,7 +20,7 @@ app.use(helmet())
 app.db = db;
 app.use(bodyParser.json());
 app.use(cookieParser());
-//app.use(cors());
+app.use(cors());
 
 app.use('/', express.static(__dirname + '/public/dist/'));
 // app.get('/',(req,res)=>{

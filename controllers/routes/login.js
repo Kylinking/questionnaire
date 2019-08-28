@@ -25,15 +25,21 @@ router.post('/', async function (req, res, next) {
       res.json(util.MakeErrorResponse('您的调查问卷已经完成过了，感谢您的参与！')).end();
       return;
     }
+    let admin = 0;
+    if (instance.Name == '管理员'){
+      admin = 1;
+    }
     const token = jwt.encode({
         id:instance.Id,
         classId:instance.ClassId,
         name:instance.Name,
+        admin
     }, jwtSecret);
     res.json({Data:{
+      Admin:admin,
       Token:token,
       Id,Name,
-      ClassId:instance.ClassId
+      ClassId:instance.ClassId,
     }}).end();
     return;
   }else{

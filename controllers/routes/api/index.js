@@ -33,7 +33,7 @@ router.use('/' + version,
         try {
             decoded = jwt.decode(token, jwtSecret);
             res.locals.logger.info(decoded);
-            let {id,classId,name} = {...decoded};
+            let {id,classId,name,admin} = {...decoded};
             let student = await db.Student.findByPk(id);
             if (!student){
                 res.status(401).json(util.MakeErrorResponse('Token无效，请重新登录！')).end();
@@ -42,6 +42,7 @@ router.use('/' + version,
             res.locals.name = name;
             res.locals.classId = classId;
             res.locals.studentId = id;
+            res.locals.admin = admin
             next();            
         } catch (error) {
             logger.error(error);

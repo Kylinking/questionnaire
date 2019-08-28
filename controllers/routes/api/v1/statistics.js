@@ -4,12 +4,12 @@ const util = require('../../../../util/util');
 
 
 router.get('/statistics', async (req, res) => {
-    let { db, logger, role } = { ...res.locals };
+    let { db, logger, admin } = { ...res.locals };
     let sequelize = db.sequelize;
     try {
-        if (!role){
-            //res.json(util.MakeErrorResponse(`此用户无权限！`)).end();
-            //return;
+        if (!admin){
+            res.json(util.MakeErrorResponse(`此用户无权限！`)).end();
+            return;
         }
         let TotalCount = (await db.CountStatistics.findOne({
             attributes: [
@@ -57,13 +57,13 @@ router.get('/statistics', async (req, res) => {
 })
 
 router.get('/statistics/:facultyId', async (req, res) => {
-    let { db, logger ,role} = { ...res.locals };
+    let { db, logger ,admin} = { ...res.locals };
     let facultyId = req.params.facultyId;
     let sequelize = db.sequelize;
     try {
-        if (!role){
-            //res.json(util.MakeErrorResponse(`此用户无权限！`)).end();
-            //return;
+        if (!admin){
+            res.json(util.MakeErrorResponse(`此用户无权限！`)).end();
+            return;
         }
         let TotalCount = (await db.CountStatistics.findOne({
             attributes: [
