@@ -16,14 +16,20 @@ let classes = ['国际护理18-1','普专临床医学18-3','普专光伏18-2(晶
         cls.FacultyId = faculties.indexOf(cls.Faculty)+1,
         delete cls.Faculty;
     }  
-    await db.Major.bulkCreate(major);
+   await db.Major.bulkCreate(major);
     let classInfo = require('./data/Class.json');
     for (let cls of classInfo){
-        cls.MajorId = majors.indexOf(cls.Major)+1,
+        cls.MajorId = majors.indexOf(cls.Major)+1;
+        let majorDb = await db.Major.findByPk(cls.MajorId);
+        cls.FacultyId = majorDb.FacultyId;
         delete cls.Major;
+        let clsTotal = await db.Student.count({
+            where:{
+                Class:cls.Name
+            }
+        });
     }  
-    console.log(classInfo);
-    await db.ClassInfo.bulkCreate(classInfo);
+   await db.ClassInfo.bulkCreate(classInfo);
 
     let students = require('./data/Student.json');
     for (let stu of students){
@@ -32,14 +38,42 @@ let classes = ['国际护理18-1','普专临床医学18-3','普专光伏18-2(晶
         stu.ClassId = classes.indexOf(stu.Class)+1;
     }
     await db.Student.bulkCreate(students);
-    await db.Question.bulkCreate(require('./data/Question.json'));
+
+    let clses = await db.ClassInfo.findAll();
+    for (let cls of clses){    
+        cls.Total = await db.Student.count({
+            where:{
+                ClassId:cls.Id
+            }
+        });
+        await cls.save();
+    }  
+
+   await db.Question.bulkCreate(require('./data/Question.json'));
     
-    // for (let question of require('./data/Question.json')) {
-    //     await db.Question.create({
-    //         Index: question.Index,
-    //         Content: question.Content,
-    //         Department: question.Department,
-    //         QuestionnaireId: question.QuestionnaireId
-    //     });
-    // }
+    let classinfoes = await db.ClassInfo.findAll({
+        include:[db.Major]
+    });
+    let questions = await db.Question.findAll();
+    let facties = await db.Faculty.findAll();
+    for (let cls of classinfoes){
+        for (let qst of questions){
+            await db.AnswerStatistics.create({
+                ClassId:cls.Id,
+                QuestionId:qst.Id,
+                FacultyId:cls.Major.FacultyId
+            })
+        }        
+    }
+    for (let flty of facties){
+        let total = await db.Student.count({
+            where:{
+                Faculty:flty.Name
+            }
+        })
+        db.CountStatistics.create({
+            FacultyId:flty.Id,
+            Total:total
+        })
+    }
 })();

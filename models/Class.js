@@ -42,6 +42,13 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false
             }
         });
+        models.ClassInfo.belongsTo(models.Faculty, {
+            onDelete: "CASCADE",
+            foreignKey: {
+                name: 'FacultyId',
+                allowNull: false
+            }
+        });
     }
     return ClassInfo;
 }
