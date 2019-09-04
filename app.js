@@ -49,31 +49,35 @@ app.all('*', function (req, res, next) {
     next();
   } catch (error) {
     logger.error(error);
-    res.json({ Error: { Message: error } }).end();
+    res.json({
+      Error: {
+        Message: error
+      }
+    }).end();
   }
 
 })
 app.use('/login',
   async function (req, res, next) {
-    let value = await util.RedisGetAsync(`${req.ip}`);
-    if (value) {
-      if (value < 5) {
-        redisClient.incr(req.ip);
-        redisClient.expire(req.ip, 5 * 60);
-        next();
-      } else {
-        if (value == 5) {
-          redisClient.expire(req.ip, 5 * 60);
+      let value = await util.RedisGetAsync(`${req.ip}${req.body.Name}`);
+      if (value) {
+        if (value < 5) {
+          redisClient.incr(`${req.ip}${req.body.Name}`);
+          redisClient.expire(`${req.ip}${req.body.Name}`, 5 * 60);
+          next();
+        } else {
+          if (value == 5) {
+            redisClient.expire(`${req.ip}${req.body.Name}`, 5 * 60);
+          }
+          res.json(util.MakeErrorResponse('请求太频繁，请等待5分钟后再试！')).end();
         }
-        res.json(util.MakeErrorResponse('请求太频繁，请等待5分钟后再试！')).end();
+      } else {
+        redisClient.set(`${req.ip}${req.body.Name}`, 1);
+        redisClient.expire(`${req.ip}${req.body.Name}`, 5 * 60);
+        next();
       }
-    } else {
-      redisClient.set(req.ip, 1);
-      redisClient.expire(req.ip, 5 * 60);
-      next();
-    }
-  },
-  LoginRouter);
+    },
+    LoginRouter);
 app.use('/api', ApiRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -82,7 +86,11 @@ app.use(function (req, res, next) {
 // error handler
 app.use(function (err, req, res, next) {
   logger.error(err);
-  res.json({ Error: { Message: err } }).end();
+  res.json({
+    Error: {
+      Message: err
+    }
+  }).end();
 });
 
 
