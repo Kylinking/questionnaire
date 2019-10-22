@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const util = require('../../../../util/util');
+const Op = require('sequelize').Op;
 
 
 router.get('/statistics', async (req, res) => {
@@ -17,6 +18,13 @@ router.get('/statistics', async (req, res) => {
                 [sequelize.fn('SUM', sequelize.col('Submit')), 'Submit'],
             ]
         })).toJSON();
+        let classIds = (await db.ClassInfo.findAll({
+            attributes:['Id'],
+            where:{
+                'Grade':'2019'
+            },
+            raw:true
+        })).map(e=>e.Id);
         let TotalAnswers = (await db.AnswerStatistics.findAll({
             attributes:[
                 [sequelize.fn('SUM', sequelize.col('ExtremelySatisfied')), 'ExtremelySatisfied'],
@@ -26,8 +34,14 @@ router.get('/statistics', async (req, res) => {
                 'QuestionId'
             ],
             include:[db.Question],
-            group:['QuestionId']
-        }));
+            group:['QuestionId'],
+            where:{
+                'ClassId' :{
+                    [Op.in]:classIds
+                }
+            }
+            }));
+
         let FacultyCount = (await db.CountStatistics.findAll({
             attributes: [
                 [sequelize.fn('SUM', sequelize.col('Total')), 'Total'],
