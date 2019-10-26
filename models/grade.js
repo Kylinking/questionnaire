@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    var Faculty = sequelize.define('Faculty', {
+    var Grade = sequelize.define('Grade', {
         Id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -10,17 +10,17 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
         },
     }, {
-        updatedAt: 'UpdatedAt',
-        createdAt: 'CreatedAt'
-    })
-    Faculty.associate = function (models) {
-        models.Faculty.hasOne(models.Major, {
+            updatedAt: 'UpdatedAt',
+            createdAt: 'CreatedAt'
+        })
+    Grade.associate = function (models) {
+        models.Grade.hasOne(models.ClassInfo, {
             onDelete: "CASCADE",
             foreignKey: {
-                name: 'FacultyId',
+                name: 'GradeId',
                 allowNull: false
             }
         });
     }
-    return Faculty;
+    return Grade;
 }

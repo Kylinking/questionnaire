@@ -3,32 +3,39 @@ module.exports = (sequelize, DataTypes) => {
         Id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
-            autoIncrement:true
+            autoIncrement: true
         },
-        Total:{
+        Total: {
             type: DataTypes.INTEGER,
-            allowNull:false,
-            defaultValue:0
+            allowNull: false,
+            defaultValue: 0
         },
-        Submit:{
+        Submit: {
             type: DataTypes.INTEGER,
-            allowNull:false,
-            defaultValue:0
-        },      
-    },{
-        updatedAt:'UpdatedAt',
-        createdAt:'CreatedAt'
+            allowNull: false,
+            defaultValue: 0
+        }
+    }, {
+        updatedAt: 'UpdatedAt',
+        createdAt: 'CreatedAt'
     })
-    CountStatistics.associate = function(models){
-        models.CountStatistics.belongsTo(models.Faculty,{
+    CountStatistics.associate = function (models) {
+        models.CountStatistics.belongsTo(models.Faculty, {
             onDelete: "CASCADE",
             foreignKey: {
                 name: 'FacultyId',
                 allowNull: false,
-                unique:true
+                unique: true
+            }
+        });
+        models.CountStatistics.belongsTo(models.Grade, {
+            onDelete: "CASCADE",
+            foreignKey: {
+                name: 'GradeId',
+                allowNull: false
             }
         });
     };
 
-   return CountStatistics;
+    return CountStatistics;
 }

@@ -38,7 +38,8 @@ router.post('/answers', async (req, res) => {
             await classInfo.save({transaction});
             let countStat = await db.CountStatistics.findOne({
                 where:{
-                    FacultyId:classInfo.FacultyId
+                    FacultyId:classInfo.FacultyId,
+                    GradeId:classInfo.GradeId
                 }
             });
             countStat.increment('Submit');

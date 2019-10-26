@@ -5,48 +5,55 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             allowNull: false,
         },
-        Name:{
+        Name: {
             type: DataTypes.STRING(30),
             allowNull: false,
         },
-        Gender:{
+        Gender: {
             type: DataTypes.STRING(2),
             allowNull: false,
         },
-        Major:{
+        Major: {
             type: DataTypes.STRING(32),
             allowNull: false,
         },
-        Faculty:{
+        Faculty: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        Class:{
+        Class: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        Submit:{
+        Submit: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            defaultValue:0
+            defaultValue: 0
         },
-        Status:{
+        Status: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            defaultValue:1
+            defaultValue: 1
         }
-    },{
-        updatedAt:'UpdatedAt',
-        createdAt:'CreatedAt'
+    }, {
+        updatedAt: 'UpdatedAt',
+        createdAt: 'CreatedAt'
     })
-    Student.associate = function(models){
-    models.Student.belongsTo(models.ClassInfo, {
-        onDelete: "CASCADE",
-        foreignKey: {
-            name: 'ClassId',
-            allowNull: false
-        }
-    });
-}
-   return Student;
+    Student.associate = function (models) {
+        models.Student.belongsTo(models.ClassInfo, {
+            onDelete: "CASCADE",
+            foreignKey: {
+                name: 'ClassId',
+                allowNull: false
+            }
+        });
+        models.Student.belongsTo(models.Grade, {
+            onDelete: "CASCADE",
+            foreignKey: {
+                name: 'GradeId',
+                allowNull: false,
+            }
+        });
+    }
+    return Student;
 }

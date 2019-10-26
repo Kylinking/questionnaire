@@ -9,23 +9,19 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        Total:{
-            type:DataTypes.INTEGER,
-            allowNull:false,
-            defaultValue:0
-        },
-        Submit:{
-            type:DataTypes.INTEGER,
-            allowNull:false,
-            defaultValue:0
-        },
-        Grade:{
-            type: DataTypes.STRING,
+        Total: {
+            type: DataTypes.INTEGER,
             allowNull: false,
+            defaultValue: 0
+        },
+        Submit: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0
         }
     }, {
-            updatedAt: 'UpdatedAt',
-            createdAt: 'CreatedAt'
+        updatedAt: 'UpdatedAt',
+        createdAt: 'CreatedAt'
     })
     ClassInfo.associate = function (models) {
         models.ClassInfo.hasOne(models.Student, {
@@ -39,6 +35,13 @@ module.exports = (sequelize, DataTypes) => {
             onDelete: "CASCADE",
             foreignKey: {
                 name: 'MajorId',
+                allowNull: false
+            }
+        });
+        models.ClassInfo.belongsTo(models.Grade, {
+            onDelete: "CASCADE",
+            foreignKey: {
+                name: 'GradeId',
                 allowNull: false
             }
         });
