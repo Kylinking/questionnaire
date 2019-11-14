@@ -13,7 +13,7 @@ var LoginRouter = require('./controllers/routes/login');
 var ApiRouter = require('./controllers/routes/api/');
 const util = require('./util/util');
 const cors = require('cors')
-
+var compression = require('compression');
 var app = express();
 var helmet = require('helmet')
 app.use(helmet())
@@ -21,7 +21,7 @@ app.db = db;
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors());
-
+app.use(compression());
 app.use('/', express.static(__dirname + '/public/dist/'));
 // app.get('/',(req,res)=>{
 //     res.sendFile(path.resolve(__dirname+'/frontend/index.html'));
