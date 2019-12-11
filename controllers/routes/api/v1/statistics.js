@@ -68,22 +68,10 @@ router.get('/statistics', async (req, res) => {
             group: ['FacultyId'],
             include: [db.Faculty]
         }));
-        // let FacultyAnswers = (await db.AnswerStatistics.findAll({
-        //     attributes: [
-        //         [sequelize.fn('SUM', sequelize.col('ExtremelySatisfied')), 'ExtremelySatisfied'],
-        //         [sequelize.fn('SUM', sequelize.col('Satisfied')), 'Satisfied'],
-        //         [sequelize.fn('SUM', sequelize.col('Unsatisfied')), 'Unsatisfied'],
-        //         [sequelize.fn('SUM', sequelize.col('ExtremelyUnsatisfied')), 'ExtremelyUnsatisfied'],
-        //         'FacultyId', 'QuestionId'
-        //     ],
-        //     group: ['FacultyId', 'QuestionId'],
-        //     include: [db.Faculty, db.Question]
-        // }));
         res.json({
             Data: {
                 TotalAnswers,
                 TotalCount,
-                //FacultyAnswers,
                 FacultyCount
             }
         }).end();
@@ -148,7 +136,8 @@ router.get('/statistics/:facultyId', async (req, res) => {
             let classIds = (await db.ClassInfo.findAll({
                 attributes: ['Id'],
                 where: {
-                    Grade: grade
+                    Grade: grade,
+                    FacultyId: facultyId
                 },
                 raw: true
             })).map(e => e.Id);
